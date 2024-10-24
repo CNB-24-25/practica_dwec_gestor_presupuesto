@@ -15,7 +15,7 @@ let gasto4 = new CrearGasto("Gasto 4", 23.55, "2021-10-06T13:10", "casa");
 let gasto5 = new CrearGasto("Gasto 5", 23.55, "2021-10-06T13:10", "casa", "supermercado");
 let gasto6 = new CrearGasto("Gasto 6", 23.55, "2021-10-06T13:10", "casa", "supermercado", "comida");*/
 
-//console.log(gasto6.mostrarGastoCompleto());
+//gasto4.obtenerPeriodoAgrupacion("dia");
 
 function actualizarPresupuesto(dinero) {
   if (dinero >= 0) {
@@ -30,7 +30,7 @@ function actualizarPresupuesto(dinero) {
 function mostrarPresupuesto() {
   return "Tu presupuesto actual es de " + presupuesto + " €";
 }
-//FUNCIÓN CREAR GASTO:
+//FUNCIÓN CONSTRUCTORA CREAR GASTO:
 function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
   this.descripcion = descripcion;
   //comprobación de si el valor tiene un tipo correcto.
@@ -91,8 +91,30 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
       }
     }
   };
-}
 
+  this.obtenerPeriodoAgrupacion = function (periodo) {
+    let nuevoPeriodo = new Date(fecha);
+    let anyo = nuevoPeriodo.getFullYear();
+    let mes = nuevoPeriodo.getMonth() + 1;
+    let dia = nuevoPeriodo.getDate();
+
+    //If para comprobar los meses y días menores ded 10;
+    if (mes < 10) {
+      mes = "0" + mes;
+    }
+    if (dia < 10) {
+      dia = "0" + dia;
+    }
+    // if para mostrar la fecha, según lo pedido en el parámetro
+    if (periodo === "anyo") {
+      return anyo;
+    } else if (periodo === "mes") {
+      return anyo + "-" + mes;
+    } else if (periodo === "dia") {
+      return anyo + "-" + mes + "-" + dia;
+    }
+  };
+}
 //Función listar gastos
 function listarGastos() {
   return gastos;
@@ -136,6 +158,9 @@ function calcularBalance() {
   return computo;
 }
 
+function filtrarGastos() {}
+
+function agruparGastos() {}
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
 // Si al obtener el código de una práctica se genera un conflicto, por favor incluye todo el código que aparece aquí debajo
@@ -148,4 +173,6 @@ export {
   borrarGasto,
   calcularTotalGastos,
   calcularBalance,
+  filtrarGastos,
+  agruparGastos,
 };
