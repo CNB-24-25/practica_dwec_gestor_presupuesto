@@ -210,7 +210,19 @@ function filtrarGastos(filtro) {
   });
 }
 
-function agruparGastos() {}
+function agruparGastos(periodo, etiquetas, fechaDesde, fechaHasta) {
+  let gastosFiltrados = filtrarGastos({ etiquetasTiene: etiquetas, fechaDesde: fechaDesde, fechaHasta: fechaHasta });
+  return gastosFiltrados.reduce(function (acc, gasto) {
+    let periodoAgrupacion = gasto.obtenerPeriodoAgrupacion(periodo);
+
+    if (acc[periodoAgrupacion]) {
+      acc[periodoAgrupacion] += gasto.valor;
+    } else {
+      acc[periodoAgrupacion] = gasto.valor;
+    }
+    return acc;
+  }, {});
+}
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
 // Si al obtener el código de una práctica se genera un conflicto, por favor incluye todo el código que aparece aquí debajo
