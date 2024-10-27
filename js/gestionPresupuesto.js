@@ -7,15 +7,27 @@ let presupuesto = 0;
 //actualizarPresupuesto();
 //mostrarPresupuesto();
 
+let valor1 = 23.44,
+  valor2 = 12.88,
+  valor3 = 22.8,
+  valor4 = 62.22,
+  valor5 = 304.75,
+  valor6 = 195.88;
 //pruebas para la función CrearGasto.
-/*let gasto1 = new CrearGasto("Gasto 1");
-let gasto2 = new CrearGasto("Gasto 2", 23.55);
-let gasto3 = new CrearGasto("Gasto 3", 23.55, "2021-10-06T13:10");
-let gasto4 = new CrearGasto("Gasto 4", 23.55, "2021-10-06T13:10", "casa");
-let gasto5 = new CrearGasto("Gasto 5", 23.55, "2021-10-06T13:10", "casa", "supermercado");
-let gasto6 = new CrearGasto("Gasto 6", 23.55, "2021-10-06T13:10", "casa", "supermercado", "comida");*/
+let gasto1 = new CrearGasto("Compra carne", valor1, "2021-10-06", "casa", "comida");
+let gasto2 = new CrearGasto("Compra fruta y verdura", valor2, "2021-09-06", "supermercado", "comida");
+let gasto3 = new CrearGasto("Bonobús", valor3, "2020-05-26", "transporte");
+let gasto4 = new CrearGasto("Gasolina", valor4, "2021-10-08", "transporte", "gasolina");
+let gasto5 = new CrearGasto("Seguro hogar", valor5, "2021-09-26", "casa", "seguros");
+let gasto6 = new CrearGasto("Seguro coche", valor6, "2021-10-06", "transporte", "seguros");
+anyadirGasto(gasto1);
+anyadirGasto(gasto2);
+anyadirGasto(gasto3);
+anyadirGasto(gasto4);
+anyadirGasto(gasto5);
+anyadirGasto(gasto6);
 
-//gasto4.obtenerPeriodoAgrupacion("dia");
+console.log(filtrarGastos({ fechaDesde: "2021-09-26" }));
 
 function actualizarPresupuesto(dinero) {
   if (dinero >= 0) {
@@ -158,7 +170,47 @@ function calcularBalance() {
   return computo;
 }
 
-function filtrarGastos() {}
+function filtrarGastos(filtro) {
+  return gastos.filter(function (gasto) {
+    if (isNaN(Date.parse(filtro.fechaDesde))) {
+      console.log("hasta los cojones");
+      if (gasto.fecha < Date.parse(filtro.fechaDesde)) {
+        console.log("hola");
+        return false;
+      }
+    }
+    if (isNaN(Date.parse(filtro.fechaHasta))) {
+      if (gasto.fecha > Date.parse(filtro.fechaHasta)) {
+        return false;
+      }
+    }
+    if (filtro.valorMinimo !== undefined) {
+      if (gasto.valor < filtro.valorMinimo) {
+        return false;
+      }
+    }
+    if (filtro.valorMaximo !== undefined) {
+      if (gasto.valor > filtro.valorMaximo) {
+        return false;
+      }
+    }
+    if (filtro.descripcionContiene !== undefined) {
+      if (!gasto.descripcion.toLowerCase().includes(filtro.descripcionContiene.toLowerCase())) {
+        return false;
+      }
+    }
+
+    if (filtro.etiquetasTiene && Array.isArray(filtro.etiquetasTiene)) {
+      const etiquetasGasto = gasto.etiquetas.map((etiqueta) => etiqueta.toLowerCase());
+      const etiquetasFiltro = filtro.etiquetasTiene.map((etiqueta) => etiqueta.toLowerCase());
+      const tieneEtiqueta = etiquetasFiltro.some((etiqueta) => etiquetasGasto.includes(etiqueta));
+      if (!tieneEtiqueta) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
 
 function agruparGastos() {}
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
