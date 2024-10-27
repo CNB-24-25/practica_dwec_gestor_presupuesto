@@ -7,7 +7,7 @@ let presupuesto = 0;
 //actualizarPresupuesto();
 //mostrarPresupuesto();
 
-let valor1 = 23.44,
+/*let valor1 = 23.44,
   valor2 = 12.88,
   valor3 = 22.8,
   valor4 = 62.22,
@@ -27,7 +27,7 @@ anyadirGasto(gasto4);
 anyadirGasto(gasto5);
 anyadirGasto(gasto6);
 
-console.log(filtrarGastos({ fechaDesde: "2021-09-26" }));
+console.log(filtrarGastos({ fechaDesde: "2021-09-26" }));*/
 
 function actualizarPresupuesto(dinero) {
   if (dinero >= 0) {
@@ -172,38 +172,36 @@ function calcularBalance() {
 
 function filtrarGastos(filtro) {
   return gastos.filter(function (gasto) {
-    if (isNaN(Date.parse(filtro.fechaDesde))) {
-      console.log("hasta los cojones");
+    if (filtro.fechaDesde) {
       if (gasto.fecha < Date.parse(filtro.fechaDesde)) {
-        console.log("hola");
         return false;
       }
     }
-    if (isNaN(Date.parse(filtro.fechaHasta))) {
+    if (filtro.fechaHasta) {
       if (gasto.fecha > Date.parse(filtro.fechaHasta)) {
         return false;
       }
     }
-    if (filtro.valorMinimo !== undefined) {
+    if (filtro.valorMinimo) {
       if (gasto.valor < filtro.valorMinimo) {
         return false;
       }
     }
-    if (filtro.valorMaximo !== undefined) {
+    if (filtro.valorMaximo) {
       if (gasto.valor > filtro.valorMaximo) {
         return false;
       }
     }
-    if (filtro.descripcionContiene !== undefined) {
+    if (filtro.descripcionContiene) {
       if (!gasto.descripcion.toLowerCase().includes(filtro.descripcionContiene.toLowerCase())) {
         return false;
       }
     }
 
-    if (filtro.etiquetasTiene && Array.isArray(filtro.etiquetasTiene)) {
-      const etiquetasGasto = gasto.etiquetas.map((etiqueta) => etiqueta.toLowerCase());
-      const etiquetasFiltro = filtro.etiquetasTiene.map((etiqueta) => etiqueta.toLowerCase());
-      const tieneEtiqueta = etiquetasFiltro.some((etiqueta) => etiquetasGasto.includes(etiqueta));
+    if (filtro.etiquetasTiene) {
+      let etiquetasGasto = gasto.etiquetas.map((etiqueta) => etiqueta.toLowerCase());
+      let etiquetasFiltro = filtro.etiquetasTiene.map((etiqueta) => etiqueta.toLowerCase());
+      let tieneEtiqueta = etiquetasFiltro.some((etiqueta) => etiquetasGasto.includes(etiqueta));
       if (!tieneEtiqueta) {
         return false;
       }
