@@ -37,6 +37,34 @@ function mostrarGastoWeb(idElemento, gasto) {
   }
   eGasto.append(etiGasto);
 }
-function mostrarGastosAgrupadosWeb() {}
+
+function mostrarGastosAgrupadosWeb(idElemento, agrup, period) {
+  let agrupacion = document.createElement("div");
+  agrupacion.classList.add("agrupacion");
+  let cabecera = documento.createElement("H1");
+  cabecera.innerHTML = `Gastos agrupados por ${periodo}`;
+  agrupacion.append(cabecera);
+
+  for (let [key, value] of Object.entries(agrup)) {
+    let grupoDatos = document.createElement("div");
+    grupoDatos.classList.add("agrupacion-dato");
+
+    let grupoClave = document.createElement("span");
+    grupoClave.classList.add("agrupacion-dato-clave");
+    grupoClave.innerHTML = key;
+    grupoClave.append(grupoClave);
+
+    let grupoValor = document.createElement("span");
+    grupoValor.classList.add("agrupacion-dato-valor");
+    grupoValor.innerHTML = value;
+    grupoValor.append(grupoValor);
+  }
+
+  let agruGasto = document.createElement("div");
+  etiGasto.classList.add("agrupacion-gasto");
+
+  let elemento = document.getElementById(idElemento);
+  agrupacion.append(agruGasto);
+}
 
 export { mostrarDatoEnId, mostrarGastoWeb, mostrarGastosAgrupadosWeb };
