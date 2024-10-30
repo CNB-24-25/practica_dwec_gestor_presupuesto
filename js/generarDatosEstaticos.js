@@ -12,3 +12,37 @@ let gasto3 = new gestionPresupuesto.CrearGasto("Bonobús", 18.6, "2020-05-26", "
 let gasto4 = new gestionPresupuesto.CrearGasto("Gasolina", 60.42, "2021-10-08", "transporte", "gasolina");
 let gasto5 = new gestionPresupuesto.CrearGasto("Seguro hogar", 206.45, "2021-09-26", "casa", "seguros");
 let gasto6 = new gestionPresupuesto.CrearGasto("Seguro coche", 195.78, "2021-10-06", "transporte", "seguros");
+
+gestionPresupuesto.anyadirGasto(gasto1);
+gestionPresupuesto.anyadirGasto(gasto2);
+gestionPresupuesto.anyadirGasto(gasto3);
+gestionPresupuesto.anyadirGasto(gasto4);
+gestionPresupuesto.anyadirGasto(gasto5);
+gestionPresupuesto.anyadirGasto(gasto6);
+
+gestionweb.mostrarDatoEnId("gastos-totales", gestionPresupuesto.calcularTotalGastos());
+gestionweb.mostrarDatoEnId("balance-total", gestionPresupuesto.calcularBalance());
+
+for (let gasto of gestionPresupuesto.listarGastos()) {
+  gestionweb.mostrarGastoWeb("listado-gastos-completos", gasto);
+}
+
+for (let gasto of gestionPresupuesto.listarGastos({ fechaDesde: "2021-09-01", fechaHasta: "2021-09-30" })) {
+  gestionweb.mostrarGastoWeb("listado-gastos-filtrado-1", gasto);
+}
+
+for (let gasto of gestionPresupuesto.listarGastos({ valorMinimo: 50 })) {
+  gestionweb.mostrarGastoWeb("listado-gastos-filtrado-2", gasto);
+}
+
+for (let gasto of gestionPresupuesto.listarGastos({ valorMinimo: 200, etiquetasTiene: [seguros] })) {
+  gestionweb.mostrarGastoWeb("listado-gastos-filtrados-3", gasto);
+}
+
+for (let gasto of gestionPresupuesto.listarGastos({ valorMaximo: 50, etiquetasTiene: [comida, transporte] })) {
+  gestionweb.mostrarGastoWeb("listado-gastos-filtrados-4", gasto);
+}
+
+gestionweb.mostrarGastosAgrupadosWeb("agrupacion-dia", gestionPresupuesto.agruparGastos("dia"), "día");
+gestionweb.mostrarGastosAgrupadosWeb("agrupacion-mes", gestionPresupuesto.agruparGastos("mes"), "mes");
+gestionweb.mostrarGastosAgrupadosWeb("agrupacion-anyo", gestionPresupuesto.agruparGastos("anyo"), "anyo");
