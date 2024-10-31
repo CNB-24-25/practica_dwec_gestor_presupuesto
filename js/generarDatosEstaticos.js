@@ -21,26 +21,29 @@ gestionPresupuesto.anyadirGasto(gasto5);
 gestionPresupuesto.anyadirGasto(gasto6);
 
 gestionweb.mostrarDatoEnId("gastos-totales", gestionPresupuesto.calcularTotalGastos());
+
 gestionweb.mostrarDatoEnId("balance-total", gestionPresupuesto.calcularBalance());
+console.log(gestionPresupuesto.listarGastos());
 
 for (let gasto of gestionPresupuesto.listarGastos()) {
-  gestionweb.mostrarGastoWeb("listado-gastos-completos", gasto);
+  gestionweb.mostrarGastoWeb("listado-gastos-completo", gasto);
 }
-
-for (let gasto of gestionPresupuesto.listarGastos({ fechaDesde: "2021-09-01", fechaHasta: "2021-09-30" })) {
+//modificar error visionado fecha
+let teOdio = gestionPresupuesto.filtrarGastos({ fechaDesde: "2021-09-01", fechaHasta: "2021-09-30" });
+for (let gasto of teOdio) {
   gestionweb.mostrarGastoWeb("listado-gastos-filtrado-1", gasto);
 }
 
-for (let gasto of gestionPresupuesto.listarGastos({ valorMinimo: 50 })) {
+for (let gasto of gestionPresupuesto.filtrarGastos({ valorMinimo: 50 })) {
   gestionweb.mostrarGastoWeb("listado-gastos-filtrado-2", gasto);
 }
 
-for (let gasto of gestionPresupuesto.listarGastos({ valorMinimo: 200, etiquetasTiene: [seguros] })) {
-  gestionweb.mostrarGastoWeb("listado-gastos-filtrados-3", gasto);
+for (let gasto of gestionPresupuesto.filtrarGastos({ valorMinimo: 200, etiquetasTiene: ["seguros"] })) {
+  gestionweb.mostrarGastoWeb("listado-gastos-filtrado-3", gasto);
 }
 
-for (let gasto of gestionPresupuesto.listarGastos({ valorMaximo: 50, etiquetasTiene: [comida, transporte] })) {
-  gestionweb.mostrarGastoWeb("listado-gastos-filtrados-4", gasto);
+for (let gasto of gestionPresupuesto.filtrarGastos({ valorMaximo: 50, etiquetasTiene: ["comida", "transporte"] })) {
+  gestionweb.mostrarGastoWeb("listado-gastos-filtrado-4", gasto);
 }
 
 gestionweb.mostrarGastosAgrupadosWeb("agrupacion-dia", gestionPresupuesto.agruparGastos("dia"), "día");
