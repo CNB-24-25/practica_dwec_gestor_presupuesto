@@ -17,11 +17,11 @@ function mostrarGastoWeb(idElemento, gasto) {
 
   let fechGasto = document.createElement("div");
   fechGasto.classList.add("gasto-fecha");
-  fechGasto.innerHTML = gasto.fecha;
+  fechGasto.innerHTML = new Date(gasto.fecha).toLocaleString();
   eGasto.append(fechGasto);
 
   let valGasto = document.createElement("div");
-  valGasto.classList.add("gasto.valor");
+  valGasto.classList.add("gasto-valor");
   valGasto.innerHTML = gasto.valor;
   eGasto.append(valGasto);
 
@@ -53,19 +53,20 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
 
     let grupoClave = document.createElement("span");
     grupoClave.classList.add("agrupacion-dato-clave");
-    grupoClave.innerHTML = key;
+    grupoClave.innerHTML = key + " ";
     grupoDatos.append(grupoClave);
 
     let grupoValor = document.createElement("span");
     grupoValor.classList.add("agrupacion-dato-valor");
     grupoValor.innerHTML = value;
     grupoDatos.append(grupoValor);
-  }
 
-  let agruGasto = document.createElement("div");
+    agrupacion.append(grupoDatos);
+  }
+  console.log(agrupacion);
 
   let elemento = document.getElementById(idElemento);
-  agrupacion.append(agruGasto);
+  elemento.append(agrupacion);
 }
 
 export { mostrarDatoEnId, mostrarGastoWeb, mostrarGastosAgrupadosWeb };

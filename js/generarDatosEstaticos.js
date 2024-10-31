@@ -28,7 +28,7 @@ console.log(gestionPresupuesto.listarGastos());
 for (let gasto of gestionPresupuesto.listarGastos()) {
   gestionweb.mostrarGastoWeb("listado-gastos-completo", gasto);
 }
-//modificar error visionado fecha
+
 let teOdio = gestionPresupuesto.filtrarGastos({ fechaDesde: "2021-09-01", fechaHasta: "2021-09-30" });
 for (let gasto of teOdio) {
   gestionweb.mostrarGastoWeb("listado-gastos-filtrado-1", gasto);
@@ -48,4 +48,6 @@ for (let gasto of gestionPresupuesto.filtrarGastos({ valorMaximo: 50, etiquetasT
 
 gestionweb.mostrarGastosAgrupadosWeb("agrupacion-dia", gestionPresupuesto.agruparGastos("dia"), "día");
 gestionweb.mostrarGastosAgrupadosWeb("agrupacion-mes", gestionPresupuesto.agruparGastos("mes"), "mes");
-gestionweb.mostrarGastosAgrupadosWeb("agrupacion-anyo", gestionPresupuesto.agruparGastos("anyo"), "anyo");
+let prueba = gestionPresupuesto.agruparGastos("anyo");
+console.log(prueba);
+gestionweb.mostrarGastosAgrupadosWeb("agrupacion-anyo", gestionPresupuesto.agruparGastos("anyo"), "año");

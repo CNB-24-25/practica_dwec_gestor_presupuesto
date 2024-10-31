@@ -110,7 +110,7 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     let mes = nuevoPeriodo.getMonth() + 1;
     let dia = nuevoPeriodo.getDate();
 
-    //If para comprobar los meses y días menores ded 10;
+    //If para comprobar los meses y días menores de 10;
     if (mes < 10) {
       mes = "0" + mes;
     }
