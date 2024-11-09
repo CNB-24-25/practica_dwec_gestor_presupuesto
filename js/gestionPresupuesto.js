@@ -167,7 +167,7 @@ function calcularTotalGastos() {
 function calcularBalance() {
   let computo = presupuesto - calcularTotalGastos();
 
-  return computo;
+  return "Tu balance actual es de " + computo;
 }
 
 function filtrarGastos(filtro) {

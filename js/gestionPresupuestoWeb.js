@@ -38,6 +38,10 @@ function mostrarGastoWeb(idElemento, gasto) {
   let elemento = document.getElementById(idElemento);
   elemento.append(eGasto);
   console.log(eGasto);
+
+  let botonEditar = document.createElement("button");
+  botonEditar.innerHTML = "Editar";
+  eGasto.append(botonEditar);
 }
 
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
@@ -69,4 +73,65 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
   elemento.append(agrupacion);
 }
 
-export { mostrarDatoEnId, mostrarGastoWeb, mostrarGastosAgrupadosWeb };
+function repintar() {
+  mostrarDatoEnId("presupuesto", gestionPresupuesto.mostrarPresupuesto());
+  mostrarDatoEnId("gastos-totales", "Tu gasto total actual es de " + gestionPresupuesto.calcularTotalGastos());
+  mostrarDatoEnId("balance-total", gestionPresupuesto.calcularBalance());
+  borrarContenido("listado-gastos-completo");
+  for (const gasto of gestionPresupuesto.listarGastos()) {
+    mostrarGastoWeb("listado-gastos-completo", gasto);
+  }
+}
+
+function borrarContenido(idElemento) {
+  const elemento = document.getElementById(idElemento);
+  elemento.innerHTML = "";
+}
+
+//manejadora del boton actualizar presupuesto
+function actualizarPresupuestoWeb() {
+  let nuevoPresupuesto = prompt("Introduce el nuevo presupuesto");
+  nuevoPresupuesto = Number(nuevoPresupuesto);
+  gestionPresupuesto.actualizarPresupuesto(nuevoPresupuesto);
+  repintar();
+}
+
+function nuevoGastoWeb() {
+  let nuevaDescripcion = prompt("Introduce una nueva descripción");
+  let nuevoValor = prompt("Introduce un nuevo valor");
+  nuevoValor = Number(nuevoValor);
+  let nuevaFecha = prompt("Introduce una nueva fecha");
+  let nuevasEtiquetas = prompt("Introduce una nueva etiqueta");
+  nuevasEtiquetas = nuevasEtiquetas.split(",");
+  alert(nuevasEtiquetas.length);
+  let gasto1 = new gestionPresupuesto.CrearGasto(nuevaDescripcion, nuevoValor, nuevaFecha, ...nuevasEtiquetas);
+  gestionPresupuesto.anyadirGasto(gasto1);
+  repintar();
+}
+function EditarHandle() {
+  function handleEvent() {
+    let nuevaDescripcion = prompt("Introduce una nueva descripción");
+    let nuevoValor = prompt("Introduce un nuevo valor");
+    nuevoValor = Number(nuevoValor);
+    let nuevaFecha = prompt("Introduce una nueva fecha");
+    let nuevasEtiquetas = prompt("Introduce una nueva etiqueta");
+    nuevasEtiquetas = nuevasEtiquetas.split(",");
+
+    let gasto1 = new gestionPresupuesto.CrearGasto(nuevaDescripcion, nuevoValor, nuevaFecha, ...nuevasEtiquetas);
+    gestionPresupuesto.anyadirGasto(gasto1);
+    repintar();
+  }
+}
+function BorrarHandle() {}
+function BorrarEtiquetasHandle() {}
+export {
+  mostrarDatoEnId,
+  mostrarGastoWeb,
+  mostrarGastosAgrupadosWeb,
+  repintar,
+  actualizarPresupuestoWeb,
+  nuevoGastoWeb,
+  EditarHandle,
+  BorrarHandle,
+  BorrarEtiquetasHandle,
+};

@@ -20,7 +20,7 @@ gestionPresupuesto.anyadirGasto(gasto4);
 gestionPresupuesto.anyadirGasto(gasto5);
 gestionPresupuesto.anyadirGasto(gasto6);
 
-gestionweb.mostrarDatoEnId("gastos-totales", gestionPresupuesto.calcularTotalGastos());
+gestionweb.mostrarDatoEnId("gastos-totales", "Tu gasto total actual es de " + gestionPresupuesto.calcularTotalGastos());
 
 gestionweb.mostrarDatoEnId("balance-total", gestionPresupuesto.calcularBalance());
 console.log(gestionPresupuesto.listarGastos());
