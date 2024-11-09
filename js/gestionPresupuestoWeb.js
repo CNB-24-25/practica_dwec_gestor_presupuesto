@@ -85,7 +85,7 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
 function repintar() {
   mostrarDatoEnId("presupuesto", gestionPresupuesto.mostrarPresupuesto());
   mostrarDatoEnId("gastos-totales", "Tu gasto total actual es de " + gestionPresupuesto.calcularTotalGastos());
-  mostrarDatoEnId("balance-total", gestionPresupuesto.calcularBalance());
+  mostrarDatoEnId("balance-total", "Tu balance actual es de " + gestionPresupuesto.calcularBalance());
   borrarContenido("listado-gastos-completo");
   for (const gasto of gestionPresupuesto.listarGastos()) {
     mostrarGastoWeb("listado-gastos-completo", gasto);
