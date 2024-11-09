@@ -3,7 +3,6 @@ import * as gestionPresupuesto from "./gestionPresupuesto.js";
 function mostrarDatoEnId(idElemento, valor) {
   let elemento = document.getElementById(idElemento);
   elemento.textContent = valor;
-  //elemento.append(valor);
 }
 
 function mostrarGastoWeb(idElemento, gasto) {
@@ -29,7 +28,9 @@ function mostrarGastoWeb(idElemento, gasto) {
   etiGasto.classList.add("gasto-etiquetas");
 
   for (let etiqueta of gasto.etiquetas) {
+    let borrarEtiquetas = new BorrarEtiquetasHandle(gasto, etiqueta);
     let etiquetasGasto = document.createElement("span");
+    etiquetasGasto.addEventListener("click", borrarEtiquetas);
     etiquetasGasto.classList.add("gasto-etiquetas-etiqueta");
     etiquetasGasto.innerHTML = etiqueta + " ";
     etiGasto.append(etiquetasGasto);
@@ -41,7 +42,15 @@ function mostrarGastoWeb(idElemento, gasto) {
 
   let botonEditar = document.createElement("button");
   botonEditar.innerHTML = "Editar";
+  botonEditar.classList.add("gasto-editar");
+  botonEditar.addEventListener("click", new EditarHandle(gasto));
   eGasto.append(botonEditar);
+
+  let botonBorrar = document.createElement("button");
+  botonBorrar.innerHTML = "Borrar";
+  botonBorrar.classList.add("gasto-borrar");
+  botonBorrar.addEventListener("click", new BorrarHandle(gasto));
+  eGasto.append(botonBorrar);
 }
 
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
@@ -103,27 +112,47 @@ function nuevoGastoWeb() {
   let nuevaFecha = prompt("Introduce una nueva fecha");
   let nuevasEtiquetas = prompt("Introduce una nueva etiqueta");
   nuevasEtiquetas = nuevasEtiquetas.split(",");
-  alert(nuevasEtiquetas.length);
-  let gasto1 = new gestionPresupuesto.CrearGasto(nuevaDescripcion, nuevoValor, nuevaFecha, ...nuevasEtiquetas);
-  gestionPresupuesto.anyadirGasto(gasto1);
+  let gasto = new gestionPresupuesto.CrearGasto(nuevaDescripcion, nuevoValor, nuevaFecha, ...nuevasEtiquetas);
+  gestionPresupuesto.anyadirGasto(gasto);
   repintar();
 }
-function EditarHandle() {
-  function handleEvent() {
+function EditarHandle(gasto) {
+  this.gasto = gasto;
+  this.handleEvent = function (event) {
     let nuevaDescripcion = prompt("Introduce una nueva descripción");
     let nuevoValor = prompt("Introduce un nuevo valor");
     nuevoValor = Number(nuevoValor);
-    let nuevaFecha = prompt("Introduce una nueva fecha");
+    let nuevaFecha = prompt("Introduce una nueva fecha con formato aaaa-mm-dd");
     let nuevasEtiquetas = prompt("Introduce una nueva etiqueta");
     nuevasEtiquetas = nuevasEtiquetas.split(",");
 
-    let gasto1 = new gestionPresupuesto.CrearGasto(nuevaDescripcion, nuevoValor, nuevaFecha, ...nuevasEtiquetas);
-    gestionPresupuesto.anyadirGasto(gasto1);
+    gasto.actualizarDescripcion(nuevaDescripcion);
+    gasto.actualizarValor(nuevoValor);
+    gasto.actualizarFecha(nuevaFecha);
+    gasto.borrarEtiquetas(...gasto.etiquetas);
+    gasto.anyadirEtiquetas(...nuevasEtiquetas);
+
     repintar();
-  }
+  };
 }
-function BorrarHandle() {}
-function BorrarEtiquetasHandle() {}
+function BorrarHandle(gasto) {
+  this.gasto = gasto;
+
+  this.handleEvent = function (event) {
+    gestionPresupuesto.borrarGasto(gasto.id);
+    repintar();
+  };
+}
+function BorrarEtiquetasHandle(gasto, etiqueta) {
+  this.gasto = gasto;
+  this.etiqueta = etiqueta;
+
+  this.handleEvent = function (event) {
+    gasto.borrarEtiquetas(etiqueta);
+    repintar();
+  };
+}
+
 export {
   mostrarDatoEnId,
   mostrarGastoWeb,
