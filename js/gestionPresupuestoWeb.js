@@ -4,7 +4,7 @@ function mostrarDatoEnId(idElemento, valor) {
   let elemento = document.getElementById(idElemento);
   elemento.textContent = valor;
 }
-
+//función que crea un gasto web, a través de una construcción de nodos en JS
 function mostrarGastoWeb(idElemento, gasto) {
   let eGasto = document.createElement("div");
   eGasto.classList.add("gasto");
@@ -46,13 +46,19 @@ function mostrarGastoWeb(idElemento, gasto) {
   botonEditar.addEventListener("click", new EditarHandle(gasto));
   eGasto.append(botonEditar);
 
+  let botonEditarFormulario = document.createElement("button");
+  botonEditarFormulario.innerHTML = "Editar gasto formulario";
+  botonEditarFormulario.classList.add("gasto-editar-formulario");
+  botonEditarFormulario.addEventListener("click", new EditarHandle(gasto));
+  eGasto.append(botonEditarFormulario);
+
   let botonBorrar = document.createElement("button");
   botonBorrar.innerHTML = "Borrar";
   botonBorrar.classList.add("gasto-borrar");
   botonBorrar.addEventListener("click", new BorrarHandle(gasto));
   eGasto.append(botonBorrar);
 }
-
+// Función que agrupa todos los gastos web, a través de una sucesión de elementos creados a partir de códido JS, en nodos.
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
   let agrupacion = document.createElement("div");
   agrupacion.classList.add("agrupacion");
@@ -82,6 +88,7 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
   elemento.append(agrupacion);
 }
 
+//función que muestra los datos añadidos en el HTML
 function repintar() {
   mostrarDatoEnId("presupuesto", gestionPresupuesto.mostrarPresupuesto());
   mostrarDatoEnId("gastos-totales", "Tu gasto total actual es de " + gestionPresupuesto.calcularTotalGastos());
@@ -91,7 +98,7 @@ function repintar() {
     mostrarGastoWeb("listado-gastos-completo", gasto);
   }
 }
-
+//función que recupera un elemento por ID y borra su contenido
 function borrarContenido(idElemento) {
   const elemento = document.getElementById(idElemento);
   elemento.innerHTML = "";
@@ -105,6 +112,7 @@ function actualizarPresupuestoWeb() {
   repintar();
 }
 
+//Función para introducir un nuevo gasto a través de los prompt
 function nuevoGastoWeb() {
   let nuevaDescripcion = prompt("Introduce una nueva descripción");
   let nuevoValor = prompt("Introduce un nuevo valor");
@@ -116,6 +124,7 @@ function nuevoGastoWeb() {
   gestionPresupuesto.anyadirGasto(gasto);
   repintar();
 }
+//Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo salta la función.
 function EditarHandle(gasto) {
   this.gasto = gasto;
   this.handleEvent = function (event) {
@@ -135,6 +144,7 @@ function EditarHandle(gasto) {
     repintar();
   };
 }
+//Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras un gasto.
 function BorrarHandle(gasto) {
   this.gasto = gasto;
 
@@ -143,6 +153,7 @@ function BorrarHandle(gasto) {
     repintar();
   };
 }
+//Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras una etiqueta de un gasto
 function BorrarEtiquetasHandle(gasto, etiqueta) {
   this.gasto = gasto;
   this.etiqueta = etiqueta;
@@ -153,6 +164,36 @@ function BorrarEtiquetasHandle(gasto, etiqueta) {
   };
 }
 
+function nuevoGastoWebFormulario() {
+  let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+
+  var formulario = plantillaFormulario.querySelector("form");
+  //enlazar el HTML con el formulario creado en JS
+  let controlesPrincipales = document.getElementById("controlesprincipales");
+
+  controlesPrincipales.append(formulario);
+
+  formulario.addEventListener("submit", manejarBotonSubmit);
+}
+
+//función manejadora del botón
+function manejarBotonSubmit(event) {
+  event.preventDefault();
+  var formulario = event.currentTarget;
+  let descripcion = formulario.descripcion.value;
+  let valor = formulario.valor.value;
+  let fecha = formulario.fecha.value;
+  let etiquetas = formulario.etiquetas.value;
+  etiquetas = etiquetas.split(",");
+  alert(etiquetas);
+
+  let gasto = gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+  alert(gasto);
+  //gestionPresupuesto.anyadirGasto(gasto);
+
+  repintar();
+}
+
 export {
   mostrarDatoEnId,
   mostrarGastoWeb,
@@ -160,6 +201,7 @@ export {
   repintar,
   actualizarPresupuestoWeb,
   nuevoGastoWeb,
+  nuevoGastoWebFormulario,
   EditarHandle,
   BorrarHandle,
   BorrarEtiquetasHandle,

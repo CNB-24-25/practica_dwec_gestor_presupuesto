@@ -29,6 +29,7 @@ anyadirGasto(gasto6);
 
 console.log(filtrarGastos({ fechaDesde: "2021-09-26" }));*/
 
+//Función para actualizar el presupuesto
 function actualizarPresupuesto(dinero) {
   if (dinero >= 0) {
     presupuesto = dinero;
@@ -38,7 +39,7 @@ function actualizarPresupuesto(dinero) {
     return -1;
   }
 }
-
+//Función para mostrar presupuesto
 function mostrarPresupuesto() {
   return "Tu presupuesto actual es de " + presupuesto + " €";
 }
@@ -61,23 +62,23 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
   this.mostrarGasto = function () {
     return `Gasto correspondiente a ${descripcion} con valor ${valor} €`;
   };
-
+  //mostrar todos los gastos completos
   this.mostrarGastoCompleto = function () {
     let fechaLocalizada = new Date(this.fecha).toLocaleString(); // Formato de fecha localizado
     let textoEtiquetas = this.etiquetas.map((etiqueta) => `- ${etiqueta}`).join("\n"); // Formato de etiquetas
     return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €.\nFecha: ${fechaLocalizada}\nEtiquetas:\n${textoEtiquetas}\n`;
   };
-
+  //mostrar la nueva descripción
   this.actualizarDescripcion = function (nuevaDescripcion) {
     this.descripcion = nuevaDescripcion;
   };
-
+  //actualizamos valor
   this.actualizarValor = function (nuevoValor) {
     if (typeof nuevoValor === "number" && nuevoValor >= 0) {
       this.valor = nuevoValor;
     }
   };
-
+  //función para añadir etiquetas
   this.anyadirEtiquetas = function (...nuevasEtiquetas) {
     for (let i = 0; i < nuevasEtiquetas.length; i++) {
       let etiqueta = nuevasEtiquetas[i];
@@ -87,13 +88,13 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
       }
     }
   };
-
+  //actualizamos la fecha
   this.actualizarFecha = function (nuevaFecha) {
     if (nuevaFecha && !isNaN(Date.parse(nuevaFecha))) {
       this.fecha = Date.parse(nuevaFecha);
     }
   };
-
+  //función para borrar las etiquetas
   this.borrarEtiquetas = function (...borrarEtiquetas) {
     for (let i = 0; i < borrarEtiquetas.length; i++) {
       let etiqueta = borrarEtiquetas[i];
@@ -103,7 +104,7 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
       }
     }
   };
-
+  //función para obtener el periodo de agrupación
   this.obtenerPeriodoAgrupacion = function (periodo) {
     let nuevoPeriodo = new Date(fecha);
     let anyo = nuevoPeriodo.getFullYear();
@@ -169,7 +170,7 @@ function calcularBalance() {
 
   return computo;
 }
-
+//función para filtrar los gastos
 function filtrarGastos(filtro) {
   return gastos.filter(function (gasto) {
     if (filtro.fechaDesde) {
@@ -209,7 +210,7 @@ function filtrarGastos(filtro) {
     return true;
   });
 }
-
+//función para agrupar todos los componentes de un gasto
 function agruparGastos(periodo, etiquetas, fechaDesde, fechaHasta) {
   let gastosFiltrados = filtrarGastos({ etiquetasTiene: etiquetas, fechaDesde: fechaDesde, fechaHasta: fechaHasta });
   return gastosFiltrados.reduce(function (acc, gasto) {
