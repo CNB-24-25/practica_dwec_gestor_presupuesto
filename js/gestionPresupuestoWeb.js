@@ -8,25 +8,25 @@ function mostrarDatoEnId(idElemento, valor) {
 function mostrarGastoWeb(idElemento, gasto) {
   let eGasto = document.createElement("div");
   eGasto.classList.add("gasto");
-
+  //Div gasto descripcion
   let descGasto = document.createElement("div");
   descGasto.classList.add("gasto-descripcion");
   descGasto.innerHTML = gasto.descripcion;
   eGasto.append(descGasto);
-
+  //div gasto fecha
   let fechGasto = document.createElement("div");
   fechGasto.classList.add("gasto-fecha");
   fechGasto.innerHTML = new Date(gasto.fecha).toLocaleString();
   eGasto.append(fechGasto);
-
+  //Div gasto valor
   let valGasto = document.createElement("div");
   valGasto.classList.add("gasto-valor");
   valGasto.innerHTML = gasto.valor;
   eGasto.append(valGasto);
-
+  //div gasto etiquetas
   let etiGasto = document.createElement("div");
   etiGasto.classList.add("gasto-etiquetas");
-
+  //listado de etiquetas con SPAN
   for (let etiqueta of gasto.etiquetas) {
     let borrarEtiquetas = new BorrarEtiquetasHandle(gasto, etiqueta);
     let etiquetasGasto = document.createElement("span");
@@ -40,23 +40,26 @@ function mostrarGastoWeb(idElemento, gasto) {
   elemento.append(eGasto);
   console.log(eGasto);
 
+  //boton editar
   let botonEditar = document.createElement("button");
   botonEditar.innerHTML = "Editar";
   botonEditar.classList.add("gasto-editar");
   botonEditar.addEventListener("click", new EditarHandle(gasto));
   eGasto.append(botonEditar);
 
-  let botonEditarFormulario = document.createElement("button");
-  botonEditarFormulario.innerHTML = "Editar gasto formulario";
-  botonEditarFormulario.classList.add("gasto-editar-formulario");
-  botonEditarFormulario.addEventListener("click", new EditarHandle(gasto));
-  eGasto.append(botonEditarFormulario);
-
+  //boton borrar
   let botonBorrar = document.createElement("button");
   botonBorrar.innerHTML = "Borrar";
   botonBorrar.classList.add("gasto-borrar");
   botonBorrar.addEventListener("click", new BorrarHandle(gasto));
   eGasto.append(botonBorrar);
+
+  //Boton editar formulario
+  let botonEditarFormulario = document.createElement("button");
+  botonEditarFormulario.innerHTML = "Editar gasto formulario";
+  botonEditarFormulario.classList.add("gasto-editar-formulario");
+  botonEditarFormulario.addEventListener("click", new EditarHandleFormulario(gasto));
+  eGasto.append(botonEditarFormulario);
 }
 // Función que agrupa todos los gastos web, a través de una sucesión de elementos creados a partir de códido JS, en nodos.
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
@@ -124,6 +127,7 @@ function nuevoGastoWeb() {
   gestionPresupuesto.anyadirGasto(gasto);
   repintar();
 }
+
 //Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo salta la función.
 function EditarHandle(gasto) {
   this.gasto = gasto;
@@ -144,6 +148,42 @@ function EditarHandle(gasto) {
     repintar();
   };
 }
+//TODO!!!! SEGUIR EDITANDO Y SOLUCIONAR LO DEL VISIONADO DEL FORMULARIO
+//objeto constructor de eventos
+function EditarHandleFormulario(gasto) {
+  this.gasto = gasto;
+
+  this.handleEvent = function (event) {
+    //recupero el formulario
+    let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+    var formulario = plantillaFormulario.querySelector("form");
+
+    //rescatamos los datos ya añadidos.
+    formulario.descripcion.value = gasto.descripcion;
+    formulario.valor.value = gasto.valor;
+    formulario.fecha.value = gasto.fecha;
+    formulario.etiquetas.value = gasto.etiquetas;
+
+    let botonEditarGasto = event.currentTarget;
+    botonEditarGasto.disabled = true;
+
+    //botón cancelar
+    var botonCancelar = formulario.querySelector("button.cancelar");
+    //enlazar el HTML con el formulario creado en JS
+    let controlesPrincipales = document.getElementById("controlesprincipales");
+
+    controlesPrincipales.append(formulario);
+
+    //crear objeto para llamar al evento addEventListener
+    let nuevoObjeto = new BotonCancelarHandle(formulario, botonAnyadirGasto);
+    //crear eventos con el addEventListener
+    formulario.addEventListener("submit", manejarBotonSubmit);
+    botonCancelar.addEventListener("click", nuevoObjeto);
+
+    repintar();
+  };
+}
+
 //Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras un gasto.
 function BorrarHandle(gasto) {
   this.gasto = gasto;
@@ -175,11 +215,11 @@ function nuevoGastoWebFormulario() {
   let controlesPrincipales = document.getElementById("controlesprincipales");
 
   controlesPrincipales.append(formulario);
-  //crear eventos con el addEventListener
-  formulario.addEventListener("submit", manejarBotonSubmit);
+
   //crear objeto para llamar al evento addEventListener
   let nuevoObjeto = new BotonCancelarHandle(formulario, botonAnyadirGasto);
-
+  //crear eventos con el addEventListener
+  formulario.addEventListener("submit", manejarBotonSubmit);
   botonCancelar.addEventListener("click", nuevoObjeto);
 }
 
@@ -201,9 +241,35 @@ function manejarBotonSubmit(event) {
 
   repintar();
 }
-//funcion chunga
-function cancelarBoton(event) {
-  var botonCancelar = event.currentTarget;
+
+//función constructora de handleEvent
+
+function BotonSubmitHandle(gasto) {
+  this.gasto = gasto;
+
+  this.handleEvent = function (event) {
+    event.preventDefault();
+    var formulario = event.currentTarget;
+    let descripcion = formulario.descripcion.value;
+    let valor = formulario.valor.value;
+    valor = Number.parseInt(valor);
+    let fecha = formulario.fecha.value;
+    let etiquetas = formulario.etiquetas.value;
+    etiquetas = etiquetas.split(",");
+
+    let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+    let botonFormulario = document.getElementById("anyadirgasto-formulario");
+    botonFormulario.disabled = false;
+    gestionPresupuesto.anyadirGasto(gasto);
+
+    gasto.actualizarDescripcion(nuevaDescripcion);
+    gasto.actualizarValor(nuevoValor);
+    gasto.actualizarFecha(nuevaFecha);
+    gasto.borrarEtiquetas(...gasto.etiquetas);
+    gasto.anyadirEtiquetas(...nuevasEtiquetas);
+
+    repintar();
+  };
 }
 // objeto manejador de eventos con una función dentro (botón cancelar)
 function BotonCancelarHandle(formulario, botonAnyadirGasto) {
