@@ -48,7 +48,7 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
   this.descripcion = descripcion;
   //comprobación de si el valor tiene un tipo correcto.
   this.valor = typeof valor === "number" && valor >= 0 ? valor : 0;
-
+  console.log(this.valor);
   //verificación de la fecha
   if (fecha && !isNaN(Date.parse(fecha))) {
     this.fecha = Date.parse(fecha);

@@ -163,35 +163,58 @@ function BorrarEtiquetasHandle(gasto, etiqueta) {
     repintar();
   };
 }
-
+//botonera para añadir nuevos gastos a través de un formulario
 function nuevoGastoWebFormulario() {
+  let botonAnyadirGasto = document.getElementById("anyadirgasto-formulario");
+  botonAnyadirGasto.disabled = true;
   let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
-
   var formulario = plantillaFormulario.querySelector("form");
+  //botón cancelar
+  var botonCancelar = formulario.querySelector("button.cancelar");
   //enlazar el HTML con el formulario creado en JS
   let controlesPrincipales = document.getElementById("controlesprincipales");
 
   controlesPrincipales.append(formulario);
-
+  //crear eventos con el addEventListener
   formulario.addEventListener("submit", manejarBotonSubmit);
+  //crear objeto para llamar al evento addEventListener
+  let nuevoObjeto = new BotonCancelarHandle(formulario, botonAnyadirGasto);
+
+  botonCancelar.addEventListener("click", nuevoObjeto);
 }
 
-//función manejadora del botón
+//función manejadora del botón enviar
 function manejarBotonSubmit(event) {
   event.preventDefault();
   var formulario = event.currentTarget;
   let descripcion = formulario.descripcion.value;
   let valor = formulario.valor.value;
+  valor = Number.parseInt(valor);
   let fecha = formulario.fecha.value;
   let etiquetas = formulario.etiquetas.value;
   etiquetas = etiquetas.split(",");
-  alert(etiquetas);
 
-  let gasto = gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
-  alert(gasto);
-  //gestionPresupuesto.anyadirGasto(gasto);
+  let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+  let botonFormulario = document.getElementById("anyadirgasto-formulario");
+  botonFormulario.disabled = false;
+  gestionPresupuesto.anyadirGasto(gasto);
 
   repintar();
+}
+//funcion chunga
+function cancelarBoton(event) {
+  var botonCancelar = event.currentTarget;
+}
+// objeto manejador de eventos con una función dentro (botón cancelar)
+function BotonCancelarHandle(formulario, botonAnyadirGasto) {
+  this.formulario = formulario;
+
+  this.botonAnyadirGasto = botonAnyadirGasto;
+
+  this.handleEvent = function (event) {
+    botonAnyadirGasto.disabled = false;
+    formulario.remove();
+  };
 }
 
 export {
