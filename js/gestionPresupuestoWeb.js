@@ -231,7 +231,7 @@ function manejarBotonSubmit(event) {
   var formulario = event.currentTarget;
   let descripcion = formulario.descripcion.value;
   let valor = formulario.valor.value;
-  valor = Number.parseInt(valor);
+  valor = Number.parseFloat(valor);
   let fecha = formulario.fecha.value;
   let etiquetas = formulario.etiquetas.value;
   etiquetas = etiquetas.split(",");
@@ -257,7 +257,7 @@ function BotonSubmitHandle(gasto) {
     let descripcion = formulario.descripcion.value;
 
     let valor = formulario.valor.value;
-    valor = Number.parseInt(valor);
+    valor = Number.parseFloat(valor);
     let fecha = formulario.fecha.value;
     let etiquetas = formulario.etiquetas.value;
     etiquetas = etiquetas.split(",");
