@@ -55,6 +55,7 @@ function mostrarGastoWeb(idElemento, gasto) {
   eGasto.append(botonBorrar);
 
   //Boton editar formulario
+
   let botonEditarFormulario = document.createElement("button");
   botonEditarFormulario.innerHTML = "Editar gasto formulario";
   botonEditarFormulario.classList.add("gasto-editar-formulario");
@@ -148,10 +149,11 @@ function EditarHandle(gasto) {
     repintar();
   };
 }
-//TODO!!!! SEGUIR EDITANDO Y SOLUCIONAR LO DEL VISIONADO DEL FORMULARIO
+
 //objeto constructor de eventos
 function EditarHandleFormulario(gasto) {
   this.gasto = gasto;
+  //this.eGasto = eGasto;
 
   this.handleEvent = function (event) {
     //recupero el formulario
@@ -159,28 +161,28 @@ function EditarHandleFormulario(gasto) {
     var formulario = plantillaFormulario.querySelector("form");
 
     //rescatamos los datos ya añadidos.
+
     formulario.descripcion.value = gasto.descripcion;
     formulario.valor.value = gasto.valor;
-    formulario.fecha.value = gasto.fecha;
+    formulario.fecha.value = new Date(gasto.fecha).toISOString().substring(0, 10);
     formulario.etiquetas.value = gasto.etiquetas;
 
     let botonEditarGasto = event.currentTarget;
     botonEditarGasto.disabled = true;
 
+    botonEditarGasto.parentNode.append(formulario);
+
     //botón cancelar
     var botonCancelar = formulario.querySelector("button.cancelar");
-    //enlazar el HTML con el formulario creado en JS
-    let controlesPrincipales = document.getElementById("controlesprincipales");
-
-    controlesPrincipales.append(formulario);
 
     //crear objeto para llamar al evento addEventListener
-    let nuevoObjeto = new BotonCancelarHandle(formulario, botonAnyadirGasto);
-    //crear eventos con el addEventListener
-    formulario.addEventListener("submit", manejarBotonSubmit);
-    botonCancelar.addEventListener("click", nuevoObjeto);
+    let nuevoObjeto = new BotonCancelarHandle(formulario, botonEditarGasto);
 
-    repintar();
+    let submitNuevo = new BotonSubmitHandle(gasto);
+
+    //crear eventos con el addEventListener
+    formulario.addEventListener("submit", submitNuevo);
+    botonCancelar.addEventListener("click", nuevoObjeto);
   };
 }
 
@@ -249,24 +251,22 @@ function BotonSubmitHandle(gasto) {
 
   this.handleEvent = function (event) {
     event.preventDefault();
+    //recupera el formulario
     var formulario = event.currentTarget;
+    //recupera los valores de cada input
     let descripcion = formulario.descripcion.value;
+
     let valor = formulario.valor.value;
     valor = Number.parseInt(valor);
     let fecha = formulario.fecha.value;
     let etiquetas = formulario.etiquetas.value;
     etiquetas = etiquetas.split(",");
 
-    let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
-    let botonFormulario = document.getElementById("anyadirgasto-formulario");
-    botonFormulario.disabled = false;
-    gestionPresupuesto.anyadirGasto(gasto);
-
-    gasto.actualizarDescripcion(nuevaDescripcion);
-    gasto.actualizarValor(nuevoValor);
-    gasto.actualizarFecha(nuevaFecha);
+    gasto.actualizarDescripcion(descripcion);
+    gasto.actualizarValor(valor);
+    gasto.actualizarFecha(fecha);
     gasto.borrarEtiquetas(...gasto.etiquetas);
-    gasto.anyadirEtiquetas(...nuevasEtiquetas);
+    gasto.anyadirEtiquetas(...etiquetas);
 
     repintar();
   };
