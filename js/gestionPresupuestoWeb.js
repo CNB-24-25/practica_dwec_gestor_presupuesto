@@ -296,6 +296,21 @@ function filtrarGastosWeb(event) {
   let fechaHasta = form.elements["formulario-filtrado-fecha-hasta"].value;
   let etiquetasTiene = form.elements["formulario-filtrado-etiquetas-tiene"].value;
 
+  alert(
+    descripcionContiene +
+      " " +
+      valorMinimo +
+      " " +
+      " " +
+      valorMaximo +
+      " " +
+      fechaDesde +
+      " " +
+      fechaHasta +
+      " " +
+      etiquetasTiene
+  );
+
   // Creamos filtro
   let objetoFiltrado = {};
 
