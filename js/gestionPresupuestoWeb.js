@@ -344,6 +344,22 @@ function filtrarGastosWeb(event) {
   }
 }
 
+function guardarGastosWeb(event) {
+  let gastosWebAJSON = JSON.stringify(gestionPresupuesto.listarGastos());
+
+  localStorage.setItem("GestorGastosDWEC", gastosWebAJSON);
+}
+
+function cargarGastosWeb(event) {
+  let conseguirGastosJSON = localStorage.getItem("GestorGastosDWEC");
+
+  let listadosGastos = conseguirGastosJSON ? JSON.parse(conseguirGastosJSON) : [];
+
+  gestionPresupuesto.cargarGastos(listadosGastos);
+
+  repintar();
+}
+
 export {
   mostrarDatoEnId,
   mostrarGastoWeb,
@@ -353,6 +369,8 @@ export {
   nuevoGastoWeb,
   nuevoGastoWebFormulario,
   filtrarGastosWeb,
+  guardarGastosWeb,
+  cargarGastosWeb,
   EditarHandle,
   BorrarHandle,
   BorrarEtiquetasHandle,
