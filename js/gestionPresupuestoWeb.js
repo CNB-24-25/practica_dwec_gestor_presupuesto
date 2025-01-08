@@ -59,8 +59,8 @@ function mostrarGastoWeb(idElemento, gasto) {
   //boton borrar (API)
   let botonBorrarApi = document.createElement("button");
   botonBorrarApi.innerHTML = "Borrar Api";
-  botonBorrar.classList.add("gasto-borrar-api");
-  botonBorrar.addEventListener("click", new BorrarApiHandle(gasto));
+  botonBorrarApi.classList.add("gasto-borrar-api");
+  botonBorrarApi.addEventListener("click", new BorrarApiHandle(gasto));
   eGasto.append(botonBorrarApi);
 
   //Boton editar formulario
@@ -183,14 +183,61 @@ function EditarHandleFormulario(gasto) {
     //botón cancelar
     var botonCancelar = formulario.querySelector("button.cancelar");
 
+    var botonEnviarApi = formulario.querySelector("button.gasto-enviar-api");
+
     //crear objeto para llamar al evento addEventListener
     let nuevoObjeto = new BotonCancelarHandle(formulario, botonEditarGasto);
 
     let submitNuevo = new BotonSubmitHandle(gasto);
 
+    let enviarApi = new GastoEnviarApiHandle(gasto);
+
     //crear eventos con el addEventListener
     formulario.addEventListener("submit", submitNuevo);
     botonCancelar.addEventListener("click", nuevoObjeto);
+    botonEnviarApi.addEventListener("click", enviarApi);
+  };
+}
+//Objeto manejador de eventos que se asigna a un botón, al pulsarlo envias un gasto (API).
+function GastoEnviarApiHandle(gasto) {
+  this.gasto = gasto;
+  this.handleEvent = async (event) => {
+    let usuario = document.getElementById("nombre_usuario").value;
+
+    let formulario = event.target.closest("form");
+
+    let descripcion = formulario.elements.descripcion.value;
+
+    let valor = formulario.valor.value;
+
+    valor = Number.parseFloat(valor);
+    let fecha = formulario.fecha.value;
+
+    let etiquetas = formulario.etiquetas.value;
+
+    etiquetas = etiquetas.split(",");
+
+    let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+
+    let headersList = {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+    };
+
+    let response = await fetch(API_URL + usuario + "/" + gasto.gastoId, {
+      method: "PUT",
+      body: JSON.stringify(gasto),
+      headers: headersList,
+    });
+
+    console.log(response);
+
+    if (response.ok) {
+      // si el HTTP-status es 200-299
+      cargarGastosApi();
+    } else {
+      globalThis.alert("ErrorHTTP: " + response.status);
+    }
   };
 }
 
@@ -206,7 +253,9 @@ function BorrarHandle(gasto) {
 
 //Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras un gasto (API).
 function BorrarApiHandle(gasto) {
+  this.gasto = gasto;
   this.handleEvent = async (event) => {
+    alert("Borrar API");
     let usuario = document.getElementById("nombre_usuario").value;
 
     let response = await fetch(API_URL + usuario + "/" + gasto.gastoId, {
@@ -221,7 +270,7 @@ function BorrarApiHandle(gasto) {
   };
 }
 
-//Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo envias un gasto (API).
+//manejador con función manejadora de eventos que se asigna a un botón, al pulsarlo envias un gasto (API).
 async function gastoEnviarApiHandle(event) {
   let usuario = document.getElementById("nombre_usuario").value;
 
