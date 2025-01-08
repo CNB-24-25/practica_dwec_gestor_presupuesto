@@ -54,8 +54,14 @@ function mostrarGastoWeb(idElemento, gasto) {
   botonBorrar.addEventListener("click", new BorrarHandle(gasto));
   eGasto.append(botonBorrar);
 
-  //Boton editar formulario
+  //boton borrar (API)
+  let botonBorrarApi = document.createElement("button");
+  botonBorrarApi.innerHTML = "Borrar Api";
+  botonBorrar.classList.add("gasto-borrar-api");
+  botonBorrar.addEventListener("click", new BorrarApiHandle(gasto));
+  eGasto.append(botonBorrarApi);
 
+  //Boton editar formulario
   let botonEditarFormulario = document.createElement("button");
   botonEditarFormulario.innerHTML = "Editar gasto formulario";
   botonEditarFormulario.classList.add("gasto-editar-formulario");
@@ -195,6 +201,24 @@ function BorrarHandle(gasto) {
     repintar();
   };
 }
+
+//Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras un gasto (API).
+function BorrarApiHandle(gasto) {
+  this.handleEvent = async (event) => {
+    let usuario = document.getElementById("nombre_usuario").value;
+
+    let response = await fetch(API_URL + usuario + "/" + gasto.gastoId, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      cargarGastosApi();
+    } else {
+      globalThis.alert("ErrorHTTP: " + response.status);
+    }
+  };
+}
+
 //Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras una etiqueta de un gasto
 function BorrarEtiquetasHandle(gasto, etiqueta) {
   this.gasto = gasto;
@@ -360,6 +384,21 @@ function cargarGastosWeb(event) {
   repintar();
 }
 
+async function cargarGastosApi(event) {
+  let usuario = document.getElementById("nombre_usuario").value;
+
+  let response = await fetch(API_URL + usuario);
+
+  if (response.ok) {
+    // si el HTTP-status es 200-299
+    let json = await response.json();
+    gestionPresupuesto.cargarGastos(json);
+    repintar();
+  } else {
+    globalThis.alert("ErrorHTTP: " + response.status);
+  }
+}
+
 export {
   mostrarDatoEnId,
   mostrarGastoWeb,
@@ -371,6 +410,7 @@ export {
   filtrarGastosWeb,
   guardarGastosWeb,
   cargarGastosWeb,
+  cargarGastosApi,
   EditarHandle,
   BorrarHandle,
   BorrarEtiquetasHandle,
