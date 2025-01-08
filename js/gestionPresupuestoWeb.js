@@ -205,19 +205,15 @@ function GastoEnviarApiHandle(gasto) {
     let usuario = document.getElementById("nombre_usuario").value;
 
     let formulario = event.target.closest("form");
-
-    let descripcion = formulario.elements.descripcion.value;
-
-    let valor = formulario.valor.value;
-
-    valor = Number.parseFloat(valor);
-    let fecha = formulario.fecha.value;
+    gasto.actualizarDescripcion(formulario.descripcion.value);
+    gasto.actualizarValor(Number.parseFloat(formulario.valor.value));
+    gasto.actualizarFecha(formulario.fecha.value);
+    gasto.etiquetas = [];
 
     let etiquetas = formulario.etiquetas.value;
 
     etiquetas = etiquetas.split(",");
-
-    let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+    gasto.anyadirEtiquetas(...etiquetas);
 
     let headersList = {
       Accept: "*/*",
