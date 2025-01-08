@@ -1,5 +1,7 @@
 import * as gestionPresupuesto from "./gestionPresupuesto.js";
 
+const API_URL = "https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/";
+
 function mostrarDatoEnId(idElemento, valor) {
   let elemento = document.getElementById(idElemento);
   elemento.textContent = valor;
@@ -219,6 +221,46 @@ function BorrarApiHandle(gasto) {
   };
 }
 
+//Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo envias un gasto (API).
+async function gastoEnviarApiHandle(event) {
+  let usuario = document.getElementById("nombre_usuario").value;
+
+  let formulario = event.target.closest("form");
+
+  let descripcion = formulario.elements.descripcion.value;
+
+  let valor = formulario.valor.value;
+
+  valor = Number.parseFloat(valor);
+  let fecha = formulario.fecha.value;
+
+  let etiquetas = formulario.etiquetas.value;
+
+  etiquetas = etiquetas.split(",");
+
+  let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(API_URL + usuario, {
+    method: "POST",
+    body: JSON.stringify(gasto),
+    headers: headersList,
+  });
+
+  console.log(response);
+
+  if (response.ok) {
+    // si el HTTP-status es 200-299
+    cargarGastosApi();
+  } else {
+    globalThis.alert("ErrorHTTP: " + response.status);
+  }
+}
+
 //Objeto con función manejadora de eventos que se asigna a un botón, al pulsarlo borras una etiqueta de un gasto
 function BorrarEtiquetasHandle(gasto, etiqueta) {
   this.gasto = gasto;
@@ -247,6 +289,13 @@ function nuevoGastoWebFormulario() {
   //crear eventos con el addEventListener
   formulario.addEventListener("submit", manejarBotonSubmit);
   botonCancelar.addEventListener("click", nuevoObjeto);
+
+  //preparación botón enviar gastos API
+  var botonEnviarApi = formulario.querySelector("button.gasto-enviar-api");
+  alert("estás en el botón" + botonEnviarApi.textContent);
+  botonEnviarApi.addEventListener("click", gastoEnviarApiHandle);
+
+  //formulario.querySelector(".gasto-enviar-api").addEventListener("click", enviarGastoApi);
 }
 
 //función manejadora del botón enviar
